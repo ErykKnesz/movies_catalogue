@@ -10,12 +10,6 @@ headers = {
     'Authorization': f"Bearer {api_token}"
 }
 
-'''
-def get_popular_movies():
-    endpoint = "https://api.themoviedb.org/3/movie/popular"
-'''
-
-
 
 def get_poster_url(poster_api_path, size='w342'):
     base_url = "https://image.tmdb.org/t/p/"
