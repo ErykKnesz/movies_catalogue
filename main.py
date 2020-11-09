@@ -6,9 +6,15 @@ app = Flask(__name__)
 
 @app.route('/')
 def homepage():
+    movies_lists = ['now_playing', 'popular', 'top_rated', 'upcoming']
     selected_list = request.args.get('list_type', 'popular')
     movies = tmdb_client.get_movies(how_many=8, list_type=selected_list)
-    return render_template("homepage.html", movies=movies, current_list=selected_list)
+    return render_template(
+        "homepage.html",
+        movies=movies,
+        current_list=selected_list,
+        movies_lists=movies_lists,
+    )
 
 
 @app.route("/movie/<movie_id>")
@@ -25,6 +31,7 @@ def utility_processor():
     return {"tmdb_image_url": tmdb_image_url}
 
 
+''' TO W SUMIE NIEPOTRZEBNE, ALE BYŁO DO ZROBIENIA (?)
 def get_movie_info():
     movies = []
     for movie in tmdb_client.get_popular_movies().get('results'):
@@ -34,10 +41,8 @@ def get_movie_info():
             title: path
         })
     return movies
+ '''
 
-
-
-    
 
 if __name__ == '__main__':
     app.run(debug=True)
