@@ -8,6 +8,8 @@ app = Flask(__name__)
 def homepage():
     movies_lists = ['now_playing', 'popular', 'top_rated', 'upcoming']
     selected_list = request.args.get('list_type', 'popular')
+    if selected_list not in movies_lists:
+        selected_list = 'popular'
     movies = tmdb_client.get_movies(how_many=8, list_type=selected_list)
     return render_template(
         "homepage.html",
