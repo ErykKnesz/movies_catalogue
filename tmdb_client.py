@@ -13,7 +13,7 @@ headers = {
 
 def get_poster_url(poster_api_path, size='w342'):
     base_url = "https://image.tmdb.org/t/p/"
-    return base_url + f"/{size}/" + poster_api_path
+    return f"{base_url}/{size}/{poster_api_path}"
 
 
 def get_movies(list_type='popular', how_many=8):
@@ -35,3 +35,16 @@ def get_single_movie_cast(movie_id):
     endpoint = f"https://api.themoviedb.org/3/movie/{movie_id}/credits"
     response = requests.get(endpoint, headers=headers)
     return response.json()['cast']
+
+
+def search_movies(search_query):
+    endpoint = f"https://api.themoviedb.org/3/search/movie/?query={search_query}"
+    response = requests.get(endpoint, headers=headers)
+    return response.json()['results']
+
+
+def get_series_airing_today():
+    endpoint = f"https://api.themoviedb.org/3/tv/airing_today?"
+    response = requests.get(endpoint, headers=headers)
+    response.raise_for_status()
+    return response.json()['results']

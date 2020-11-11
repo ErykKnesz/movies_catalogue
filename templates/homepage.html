@@ -1,4 +1,3 @@
-
 {% extends "index.html" %}
 
 {% block content %}
@@ -12,7 +11,7 @@
         {% if current_list == list_type %}
         <a href="{{ url_for('homepage', list_type=list_type) }}" class="btn btn-outline-info active">{{ list_type.capitalize()|replace('_', ' ') }}</a>      
         {% else %}
-          <a href="{{ url_for('homepage', list_type=list_type) }}" class="btn btn-outline-info">{{ list_type.capitalize()|replace('_', ' ') }}</a>
+        <a href="{{ url_for('homepage', list_type=list_type) }}" class="btn btn-outline-info">{{ list_type.capitalize()|replace('_', ' ') }}</a>
         {% endif %}       
         {% endfor %}
         </div>
