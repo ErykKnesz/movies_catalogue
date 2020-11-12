@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for, redirect, flash
 import tmdb_client
 
 app = Flask(__name__)
+app.secret_key = b'wefwt4'
+FAVORITES = set()
 
 
 @app.route('/')
@@ -19,9 +21,13 @@ def homepage():
     )
 
 
-@app.route("/movie/<movie_id>")
+@app.route("/movie/<movie_id>", methods=["GET", "POST"])
 def movie_details(movie_id):
     movie = tmdb_client.get_single_movie(movie_id)
+    if request.method == "POST":
+        FAVORITES.add(movie_id)
+        flash(f"Dodano \"{movie['title']}\" do ulubionych!")
+        return redirect(url_for("homepage"))
     cast = tmdb_client.get_single_movie_cast(movie_id)
     return render_template("movie_details.html", movie=movie, cast=cast)
 
@@ -49,9 +55,13 @@ def series():
     )
 
 
-@app.route("/favorite/")
-def favorite():
-    pass
+@app.route("/favorites/")
+def favorites():
+    favorites = []
+    for movie_id in FAVORITES:
+        movie = tmdb_client.get_single_movie(movie_id)
+        favorites.append(movie)
+    return render_template("favorites.html", favorites=favorites)
 
 
 @app.route("/me/")
