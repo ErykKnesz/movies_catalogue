@@ -23,12 +23,12 @@ def get_poster_url(poster_api_path, size='w342'):
     return f"{base_url}/{size}/{poster_api_path}"
 
 
-def get_movies(list_type='popular', how_many=8):
+def get_movies(list_type, how_many=8):
     data = call_tmdb_api(f"movie/{list_type}")
-    #data = random.sample(data['results'], len(data['results']))
-    return data#[:how_many]
+    data = random.sample(data['results'], len(data['results']))
+    return data[:how_many]
 
-get_movies(list_type='popular', how_many=8)
+
 def get_single_movie(movie_id):
     return call_tmdb_api(f"movie/{movie_id}")
 
