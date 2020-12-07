@@ -35,7 +35,6 @@ def get_single_movie(movie_id):
 
 def get_single_movie_cast(movie_id):
     data = call_tmdb_api(f"movie/{movie_id}/credits")
-    print(data)
     return data['cast']
 
 
