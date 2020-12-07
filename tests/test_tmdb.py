@@ -43,55 +43,77 @@ def test_get_poster_url_uses_default_size():
 
 
 def test_get_movies_is_8(monkeypatch):
-    mock_result = [
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'}
-    ]
+    mock_result = {
+        'results': [
+            {'k1': 'v1'},
+            {'k1': 'v1'},
+            {'k1': 'v1'},
+            {'k1': 'v1'},
+            {'k1': 'v1'},
+            {'k1': 'v1'},
+            {'k1': 'v1'},
+            {'k1': 'v1'}]
+    }
     api_mock = MagicMock(return_value=mock_result)
     monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock)
-    assert len(api_mock()) == 8
+    api = tmdb_client.get_movies('popular')
+    api_mock_length = len(api_mock()['results'])
+    assert api_mock_length == 8 and api_mock_length == len(api)
 
 
 def test_get_movies_is_random(monkeypatch):
-    mock_result = [
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'},
-        {'k1': 'v1'}
-    ]
-    api_mock_1 = MagicMock(return_value=mock_result)
+    mock_result_call_1 = {
+        'results': [
+            {'kx': 'vx'},
+            {'kx': 'vx'},
+            {'kx': 'vx'}]
+    }
+    mock_result_call_2 = {
+       'results': [
+            {'ky': 'vy'},
+            {'ky': 'vy'},
+            {'ky': 'vy'}]
+    }
+    api_mock_1 = MagicMock(return_value=mock_result_call_1)
     monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock_1)
-    api_mock_2 = MagicMock(return_value=mock_result)
+    api_1 = tmdb_client.get_movies('popular')
+    api_mock_2 = MagicMock(return_value=mock_result_call_2)
     monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock_2)
-    assert api_mock_1 != api_mock_2
+    api_2 = tmdb_client.get_movies('popular')
+    assert api_1 != api_2
 
 
 def test_get_single_movie_cast(monkeypatch):
-    mock_data = {'cast': 'some cast'}
+    mock_data = {
+        'cast': [{'adult': False, 'gender': 2}]
+        }
     api_mock = Mock(return_value=mock_data)
-    monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock)
+    monkeypatch.setattr("tmdb_client.get_single_movie_cast", api_mock)
+    api = tmdb_client.get_single_movie_cast(movie_id='movie_id')
     assert 'cast' in api_mock().keys()
+    'adult' and 'gender' in api_mock()['cast'][0]
+    mock_data == api
 
 
-def test_get_search_movies(monkeypatch):
+def test_search_movies(monkeypatch):
     mock_data = {'results': 'some results'}
     api_mock = Mock(return_value=mock_data)
-    monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock)
-    assert 'results' in api_mock().keys()
+    monkeypatch.setattr("tmdb_client.search_movies", api_mock)
+    api = tmdb_client.search_movies(search_query='query')
+    assert mock_data == api
 
 
 def test_get_series_airing_today(monkeypatch):
     mock_data = {'results': 'some results'}
     api_mock = Mock(return_value=mock_data)
-    monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock)
-    assert 'results' in api_mock().keys()
+    monkeypatch.setattr("tmdb_client.get_series_airing_today", api_mock)
+    api = tmdb_client.get_series_airing_today()
+    assert mock_data == api
+
+
+def test_get_single_movie(monkeypatch):
+    mock_data = {'results': 'some results'}
+    api_mock = Mock(return_value=mock_data)
+    monkeypatch.setattr("tmdb_client.get_single_movie", api_mock)
+    api = tmdb_client.get_single_movie('movie_id')
+    assert mock_data == api
