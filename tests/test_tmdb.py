@@ -62,24 +62,22 @@ def test_get_movies_is_8(monkeypatch):
 
 
 def test_get_movies_is_random(monkeypatch):
-    mock_result_call_1 = {
+    mock_result = {
         'results': [
-            {'kx': 'vx'},
-            {'kx': 'vx'},
-            {'kx': 'vx'}]
+            {'k1': 'v1'},
+            {'k2': 'v2'},
+            {'k3': 'v3'},
+            {'k4': 'v4'},
+            {'k5': 'v5'}]
     }
-    mock_result_call_2 = {
-       'results': [
-            {'ky': 'vy'},
-            {'ky': 'vy'},
-            {'ky': 'vy'}]
-    }
-    api_mock_1 = MagicMock(return_value=mock_result_call_1)
+    api_mock_1 = MagicMock(return_value=mock_result)
     monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock_1)
     api_1 = tmdb_client.get_movies('popular')
-    api_mock_2 = MagicMock(return_value=mock_result_call_2)
+    api_mock_2 = MagicMock(return_value=mock_result)
     monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock_2)
     api_2 = tmdb_client.get_movies('popular')
+    print(api_1)
+    print(api_2)
     assert api_1 != api_2
 
 
