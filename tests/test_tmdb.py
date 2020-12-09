@@ -86,32 +86,31 @@ def test_get_single_movie_cast(monkeypatch):
         'cast': [{'adult': False, 'gender': 2}]
         }
     api_mock = Mock(return_value=mock_data)
-    monkeypatch.setattr("tmdb_client.get_single_movie_cast", api_mock)
+    monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock)
     api = tmdb_client.get_single_movie_cast(movie_id='movie_id')
-    assert 'cast' in api_mock().keys()
-    'adult' and 'gender' in api_mock()['cast'][0]
-    mock_data == api
+    assert 'adult' and 'gender' in api[0]
+    api == mock_data
 
 
 def test_search_movies(monkeypatch):
     mock_data = {'results': 'some results'}
     api_mock = Mock(return_value=mock_data)
-    monkeypatch.setattr("tmdb_client.search_movies", api_mock)
+    monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock)
     api = tmdb_client.search_movies(search_query='query')
-    assert mock_data == api
+    assert api == 'some results'
 
 
 def test_get_series_airing_today(monkeypatch):
     mock_data = {'results': 'some results'}
     api_mock = Mock(return_value=mock_data)
-    monkeypatch.setattr("tmdb_client.get_series_airing_today", api_mock)
+    monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock)
     api = tmdb_client.get_series_airing_today()
-    assert mock_data == api
+    assert api == 'some results'
 
 
 def test_get_single_movie(monkeypatch):
     mock_data = {'results': 'some results'}
     api_mock = Mock(return_value=mock_data)
-    monkeypatch.setattr("tmdb_client.get_single_movie", api_mock)
+    monkeypatch.setattr("tmdb_client.call_tmdb_api", api_mock)
     api = tmdb_client.get_single_movie('movie_id')
-    assert mock_data == api
+    assert api == mock_data
