@@ -1,6 +1,16 @@
 from flask import Flask, render_template, request, url_for, redirect, flash
 import tmdb_client
 
+from functools import wraps
+import asyncio
+
+def async_action(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        return asyncio.run(f(*args, **kwargs))
+    return wrapped
+
+
 app = Flask(__name__)
 app.secret_key = b'wefwt4'
 FAVORITES = set()
@@ -56,12 +66,17 @@ def series():
 
 
 @app.route("/favorites/")
-def favorites():
+@async_action
+async def favorites():
     favorites = []
+    await get_movies(favorites)
+    return render_template("favorites.html", favorites=favorites)
+
+
+async def get_movies(favorites):
     for movie_id in FAVORITES:
         movie = tmdb_client.get_single_movie(movie_id)
         favorites.append(movie)
-    return render_template("favorites.html", favorites=favorites)
 
 
 @app.route("/me/")
