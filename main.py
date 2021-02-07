@@ -1,19 +1,9 @@
 from flask import Flask, render_template, request, url_for, redirect, flash
 import tmdb_client
 
-from functools import wraps
-import asyncio
-
-def async_action(f):
-    @wraps(f)
-    def wrapped(*args, **kwargs):
-        return asyncio.run(f(*args, **kwargs))
-    return wrapped
-
-
 app = Flask(__name__)
 app.secret_key = b'wefwt4'
-FAVORITES = set()
+FAVORITES = []
 
 
 @app.route('/')
@@ -35,8 +25,11 @@ def homepage():
 def movie_details(movie_id):
     movie = tmdb_client.get_single_movie(movie_id)
     if request.method == "POST":
-        FAVORITES.add(movie_id)
-        flash(f"Dodano \"{movie['title']}\" do ulubionych!")
+        if movie not in FAVORITES:
+            FAVORITES.append(movie)
+            flash(f"Dodano \"{movie['title']}\" do ulubionych!")
+        else:
+            flash(f"\"{movie['title']}\" już jest w ulubionych!")
         return redirect(url_for("homepage"))
     cast = tmdb_client.get_single_movie_cast(movie_id)
     return render_template("movie_details.html", movie=movie, cast=cast)
@@ -66,17 +59,8 @@ def series():
 
 
 @app.route("/favorites/")
-@async_action
-async def favorites():
-    favorites = []
-    await get_movies(favorites)
-    return render_template("favorites.html", favorites=favorites)
-
-
-async def get_movies(favorites):
-    for movie_id in FAVORITES:
-        movie = tmdb_client.get_single_movie(movie_id)
-        favorites.append(movie)
+def favorites():
+    return render_template("favorites.html", favorites=FAVORITES)
 
 
 @app.route("/me/")
