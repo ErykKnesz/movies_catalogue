@@ -1,7 +1,3 @@
-import sys
-sys.path.append("C:\\Users\\Dagmara\\Desktop\\kodilla\\Python\\Projekty\\"
-                 "movies_project\\movies_catalogue")
-
 import tmdb_client
 from main import app
 from unittest.mock import Mock, MagicMock
